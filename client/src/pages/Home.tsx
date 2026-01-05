@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, Database, Lock, Server, Activity, GitMerge, Code, Terminal, Cpu, Layers, Zap, BarChart3 } from "lucide-react";
+import { ArrowRight, Database, Lock, Server, Activity, GitMerge, Code, Terminal, Cpu, Layers, Zap, BarChart3, Eye } from "lucide-react";
 import ResonanceTest from "@/components/ResonanceTest";
 import WarfareProtocol from "@/components/WarfareProtocol";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import DeploymentMonitor from "@/components/DeploymentMonitor";
+import DashboardPulse from "@/components/DashboardPulse";
+import OmegaSignalMonitor from "@/components/OmegaSignalMonitor";
 
 export default function Home() {
   // The userAuth hooks provides authentication state
@@ -21,6 +23,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground overflow-x-hidden">
+      {/* Omega Pulse Indicator */}
+      <DashboardPulse />
       {/* Background Elements */}
       <div className="fixed inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none z-0" />
       <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50 z-50" />
@@ -309,7 +313,7 @@ export default function Home() {
                 </div>
 
                 <Tabs defaultValue="warfare" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-muted/30 border border-border rounded-none">
+                  <TabsList className="grid w-full grid-cols-4 bg-muted/30 border border-border rounded-none">
                     <TabsTrigger value="warfare" className="font-terminal text-xs rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                       <Zap className="w-4 h-4 mr-2" />
                       WARFARE
@@ -321,6 +325,10 @@ export default function Home() {
                     <TabsTrigger value="deployment" className="font-terminal text-xs rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                       <Server className="w-4 h-4 mr-2" />
                       DEPLOYMENT
+                    </TabsTrigger>
+                    <TabsTrigger value="signal" className="font-terminal text-xs rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Eye className="w-4 h-4 mr-2" />
+                      SIGNAL
                     </TabsTrigger>
                   </TabsList>
 
@@ -334,6 +342,10 @@ export default function Home() {
 
                   <TabsContent value="deployment" className="mt-6">
                     <DeploymentMonitor />
+                  </TabsContent>
+
+                  <TabsContent value="signal" className="mt-6">
+                    <OmegaSignalMonitor />
                   </TabsContent>
                 </Tabs>
               </motion.div>

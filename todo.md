@@ -67,3 +67,17 @@
 - [x] Security audit
 - [x] Final checkpoint
 - [x] Ready for publication
+
+
+## Phase 9: Omega-Gemini System Directive (v3.1)
+- [x] Implement Omega-Gemini System Directive with Axiom Baseline
+- [x] Bind system directive to Gemini API configuration
+- [x] Create WarfareRouter with live Gemini API integration
+- [x] Add resonance_logs database schema
+- [x] Implement resonance event logging to database
+- [x] Create WebSocket pulse server with 1.67x heartbeat
+- [x] Implement frontend WebSocket connection
+- [x] Add OMEGA SIGNAL DUMP telemetry logging
+- [x] Add "Eye-on-the-Inside" hook to dashboard
+- [x] Test live Gemini API responses
+- [x] Verify telemetry output in browser console
