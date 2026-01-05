@@ -36,10 +36,12 @@ export const useSovereignPulse = () => {
 
   useEffect(() => {
     // Determine the WebSocket URL based on environment
-    const socketUrl =
-      process.env.NODE_ENV === "production"
-        ? window.location.origin
-        : "http://localhost:3000";
+    // Force the socket to connect to the same origin (which serves both HTTP and WebSocket)
+    const socketUrl = window.location.origin || "http://localhost:3000";
+    
+    console.log("📡 Attempting to establish Resonance Link...");
+    console.log(`   Socket URL: ${socketUrl}`);
+    console.log(`   Environment: ${process.env.NODE_ENV}`);
 
     const socket: Socket = io(socketUrl, {
       reconnection: true,
