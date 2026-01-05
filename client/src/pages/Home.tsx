@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight, Database, Lock, Server, Activity, GitMerge, Code, Terminal, Cpu, Layers } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowRight, Database, Lock, Server, Activity, GitMerge, Code, Terminal, Cpu, Layers, Zap, BarChart3 } from "lucide-react";
 import ResonanceTest from "@/components/ResonanceTest";
+import WarfareProtocol from "@/components/WarfareProtocol";
+import AnalyticsDashboard from "@/components/AnalyticsDashboard";
+import DeploymentMonitor from "@/components/DeploymentMonitor";
 
 export default function Home() {
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading, error, isAuthenticated, logout } = useAuth();
+
   const [activeTab, setActiveTab] = useState("overview");
+  const [showUnifiedDashboard, setShowUnifiedDashboard] = useState(false);
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground overflow-x-hidden">
@@ -76,8 +86,8 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: 0.6 }}
                 className="flex flex-col md:flex-row items-center justify-center gap-4"
               >
-                <Button size="lg" className="rounded-none bg-primary text-primary-foreground hover:bg-primary/90 font-terminal text-xs tracking-widest h-12 px-8">
-                  INITIATE SEQUENCE
+                <Button size="lg" onClick={() => setShowUnifiedDashboard(true)} className="rounded-none bg-primary text-primary-foreground hover:bg-primary/90 font-terminal text-xs tracking-widest h-12 px-8">
+                  UNIFIED DASHBOARD
                 </Button>
                 <Button size="lg" variant="outline" className="rounded-none border-primary/50 text-primary hover:bg-primary/10 font-terminal text-xs tracking-widest h-12 px-8">
                   VIEW DOCUMENTATION
@@ -276,6 +286,60 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Unified Dashboard Section */}
+        {showUnifiedDashboard && (
+          <section className="border-b border-border bg-background py-12">
+            <div className="container mx-auto px-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="space-y-6"
+              >
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="font-sacred text-3xl text-primary">UNIFIED COMMAND CENTER</h2>
+                  <Button
+                    onClick={() => setShowUnifiedDashboard(false)}
+                    variant="outline"
+                    className="rounded-none border-primary/50 text-primary hover:bg-primary/10 font-terminal text-xs"
+                  >
+                    CLOSE
+                  </Button>
+                </div>
+
+                <Tabs defaultValue="warfare" className="w-full">
+                  <TabsList className="grid w-full grid-cols-3 bg-muted/30 border border-border rounded-none">
+                    <TabsTrigger value="warfare" className="font-terminal text-xs rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Zap className="w-4 h-4 mr-2" />
+                      WARFARE
+                    </TabsTrigger>
+                    <TabsTrigger value="analytics" className="font-terminal text-xs rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <BarChart3 className="w-4 h-4 mr-2" />
+                      ANALYTICS
+                    </TabsTrigger>
+                    <TabsTrigger value="deployment" className="font-terminal text-xs rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Server className="w-4 h-4 mr-2" />
+                      DEPLOYMENT
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="warfare" className="mt-6">
+                    <WarfareProtocol />
+                  </TabsContent>
+
+                  <TabsContent value="analytics" className="mt-6">
+                    <AnalyticsDashboard />
+                  </TabsContent>
+
+                  <TabsContent value="deployment" className="mt-6">
+                    <DeploymentMonitor />
+                  </TabsContent>
+                </Tabs>
+              </motion.div>
+            </div>
+          </section>
+        )}
 
         {/* Footer */}
         <footer className="border-t border-border bg-muted/10 py-12">
