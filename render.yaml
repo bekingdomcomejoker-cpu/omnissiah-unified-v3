@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: omnissiah-engine-v3
+    env: node
+    plan: free
+    buildCommand: pnpm install && pnpm run build
+    startCommand: node dist/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: VITE_APP_ID
+        value: omnissiah-unified-v3
+      - key: OAUTH_SERVER_URL
+        value: https://oauth.example.com
