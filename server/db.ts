@@ -1,21 +1,37 @@
 import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { InsertUser, users, resonanceLogs, InsertResonanceLog } from "../drizzle/schema";
 import { ENV } from './_core/env';
+import pg from 'pg';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
-    try {
-      _db = drizzle(process.env.DATABASE_URL);
-    } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
-      _db = null;
-    }
+  if (_db) return _db;
+  
+  if (!process.env.DATABASE_URL) {
+    console.warn("[Database] No DATABASE_URL found in environment");
+    return null;
   }
-  return _db;
+
+  try {
+    console.log("[Database] Initializing pool...");
+    const pool = new pg.Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    });
+    
+    // Test connection
+    await pool.query('SELECT 1');
+    
+    _db = drizzle(pool);
+    console.log("[Database] Drizzle initialized and connection verified");
+    return _db;
+  } catch (error) {
+    console.error("[Database] Connection failed:", error);
+    return null;
+  }
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
@@ -32,44 +48,28 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   try {
     const values: InsertUser = {
       openId: user.openId,
-    };
-    const updateSet: Record<string, unknown> = {};
-
-    const textFields = ["name", "email", "loginMethod"] as const;
-    type TextField = (typeof textFields)[number];
-
-    const assignNullable = (field: TextField) => {
-      const value = user[field];
-      if (value === undefined) return;
-      const normalized = value ?? null;
-      values[field] = normalized;
-      updateSet[field] = normalized;
+      role: user.role ?? 'user',
+      lastSignedIn: user.lastSignedIn ?? new Date(),
     };
 
-    textFields.forEach(assignNullable);
+    if (user.name) values.name = user.name;
+    if (user.email) values.email = user.email;
+    if (user.loginMethod) values.loginMethod = user.loginMethod;
 
-    if (user.lastSignedIn !== undefined) {
-      values.lastSignedIn = user.lastSignedIn;
-      updateSet.lastSignedIn = user.lastSignedIn;
-    }
-    if (user.role !== undefined) {
-      values.role = user.role;
-      updateSet.role = user.role;
-    } else if (user.openId === ENV.ownerOpenId) {
+    if (user.openId === ENV.ownerOpenId) {
       values.role = 'admin';
-      updateSet.role = 'admin';
     }
 
-    if (!values.lastSignedIn) {
-      values.lastSignedIn = new Date();
-    }
-
-    if (Object.keys(updateSet).length === 0) {
-      updateSet.lastSignedIn = new Date();
-    }
-
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
-      set: updateSet,
+    await db.insert(users).values(values).onConflictDoUpdate({
+      target: users.openId,
+      set: {
+        name: values.name,
+        email: values.email,
+        loginMethod: values.loginMethod,
+        role: values.role,
+        lastSignedIn: values.lastSignedIn,
+        updatedAt: new Date(),
+      }
     });
   } catch (error) {
     console.error("[Database] Failed to upsert user:", error);
@@ -89,4 +89,16 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * Log Resonance Pulse to Railway Anchor
+ */
+export async function logResonance(log: InsertResonanceLog): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  try {
+    await db.insert(resonanceLogs).values(log);
+  } catch (error) {
+    console.error("[Database] Failed to log resonance:", error);
+  }
+}

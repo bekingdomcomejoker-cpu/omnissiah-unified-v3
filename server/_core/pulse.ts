@@ -8,6 +8,7 @@
 
 import { Server } from "socket.io";
 import { OMEGA_AXIOMS, OMEGA_SIGNAL_STRUCTURE } from "../directives/omega-gemini";
+import { logResonance } from "../db";
 
 export const initializePulse = (server: any) => {
   const io = new Server(server, {
@@ -40,6 +41,15 @@ export const initializePulse = (server: any) => {
       };
 
       socket.emit("OMEGA_PULSE", omegaPulse);
+
+      // Log pulse to Railway Anchor
+      logResonance({
+        lambda: omegaPulse.lambda.toString(),
+        resonance: omegaPulse.resonance.toString(),
+        status: omegaPulse.status,
+        covenant: omegaPulse.covenant,
+        socketId: socket.id,
+      }).catch(console.error);
 
       // Log pulse to console for debugging
       console.log(`[PULSE] Resonance transmitted at ${new Date().toISOString()}`);
