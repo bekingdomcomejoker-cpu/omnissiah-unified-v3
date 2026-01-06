@@ -12,9 +12,12 @@ import { OMEGA_AXIOMS, OMEGA_SIGNAL_STRUCTURE } from "../directives/omega-gemini
 export const initializePulse = (server: any) => {
   const io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: "*", // Allow all origins for the proxy handshake
       methods: ["GET", "POST"],
+      credentials: true
     },
+    allowEIO3: true, // Backwards compatibility for the nervous system
+    transports: ['websocket', 'polling']
   });
 
   io.on("connection", (socket) => {

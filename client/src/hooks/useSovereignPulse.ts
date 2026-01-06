@@ -44,6 +44,12 @@ export const useSovereignPulse = () => {
     console.log(`   Environment: ${process.env.NODE_ENV}`);
 
     const socket: Socket = io(socketUrl, {
+      path: "/socket.io/",
+      transports: ["websocket"],
+      upgrade: false,
+      // This forces the connection to respect the Manus proxy wrapper
+      secure: true,
+      rejectUnauthorized: false,
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
