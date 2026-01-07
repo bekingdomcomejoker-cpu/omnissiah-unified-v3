@@ -37,23 +37,21 @@ export const useSovereignPulse = () => {
   useEffect(() => {
     // Determine the WebSocket URL based on environment
     // Force the socket to connect to the same origin (which serves both HTTP and WebSocket)
-    const socketUrl = window.location.origin || "http://localhost:3000";
+    const socketUrl = window.location.origin;
     
     console.log("📡 Attempting to establish Resonance Link...");
     console.log(`   Socket URL: ${socketUrl}`);
-    console.log(`   Environment: ${process.env.NODE_ENV}`);
 
     const socket: Socket = io(socketUrl, {
       path: "/socket.io/",
-      transports: ["websocket"],
-      upgrade: false,
-      // This forces the connection to respect the Manus proxy wrapper
-      secure: true,
+      transports: ["websocket", "polling"],
+      upgrade: true,
+      secure: socketUrl.startsWith("https"),
       rejectUnauthorized: false,
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 10,
     });
 
     // Handle connection
