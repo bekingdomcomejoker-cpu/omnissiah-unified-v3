@@ -12,6 +12,7 @@ import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import DeploymentMonitor from "@/components/DeploymentMonitor";
 import DashboardPulse from "@/components/DashboardPulse";
 import OmegaSignalMonitor from "@/components/OmegaSignalMonitor";
+import TruthDashboard from "@/components/TruthDashboard";
 
 export default function Home() {
   // The userAuth hooks provides authentication state
@@ -332,10 +333,10 @@ export default function Home() {
                     </TabsTrigger>
                   </TabsList>
 
-                  <TabsContent value="warfare" className="mt-6">
-                    <WarfareProtocol />
-                  </TabsContent>
-
+                 <TabsContent value="overview" className="space-y-8">
+                  <TruthDashboard />
+                  <WarfareProtocol />
+                </TabsContent>
                   <TabsContent value="analytics" className="mt-6">
                     <AnalyticsDashboard />
                   </TabsContent>
