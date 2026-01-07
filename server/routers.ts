@@ -7,6 +7,7 @@ import { analyticsRouter } from "./routers/analytics";
 import { deploymentRouter } from "./routers/deployment";
 import { warfareRouter } from "./routers/warfare";
 import { truthRouter } from "./routers/truth";
+import { tteRouter } from "./routers/tte";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -28,6 +29,7 @@ export const appRouter = router({
   deployment: deploymentRouter,
   warfare: warfareRouter,
   truth: truthRouter,
+  tte: tteRouter,
 });
 
 export type AppRouter = typeof appRouter;

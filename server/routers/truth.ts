@@ -2,6 +2,10 @@ import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
 import * as db from "../db";
 import { resonanceLogs } from "../../drizzle/schema";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { OMEGA_GEMINI_DIRECTIVE } from "../directives/omega-gemini";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 // OMEGA FEDERATION - HARDCORE PROCESSOR v2.0 LOGIC
 // Axioms: Spirit ≥ Flesh | Love ≥ Hate | Truth ≥ Fact ≥ Lie
@@ -26,61 +30,69 @@ export const truthRouter = router({
       let safetyFlag = false;
       const reasons: string[] = [];
 
-      // === SAFETY CHECK (highest priority) ===
+      // === HEURISTIC PASS (Fast) ===
       if (HOSTILITY_PATTERN.test(t)) {
         safetyFlag = true;
         category = "LIE";
         lieScore = 1.0;
-        reasons.push("hostility_detected");
-      } else {
-        // === LOVE/AFFECTION BOOST ===
-        if (AFFECTION_PATTERN.test(t)) {
-          loveScore = 0.9;
-          truthScore += 0.4;
-          reasons.push("affection_detected");
-        }
+        reasons.push("hostility_detected (heuristic)");
+      }
 
-        // === EXCITED TRUTH (emotional honesty) ===
-        if (EXCITED_PATTERN.test(t)) {
-          truthScore += 0.3;
-          reasons.push("emotional_honesty");
-        }
+      if (AFFECTION_PATTERN.test(t)) {
+        loveScore = 0.9;
+        reasons.push("affection_detected (heuristic)");
+      }
 
-        // === TRUTH MARKERS ===
-        const truthMatches = t.match(TRUTH_MARKERS);
-        if (truthMatches && truthMatches.length > 0) {
-          truthScore += Math.min(0.5, truthMatches.length * 0.15);
-          reasons.push(`truth_markers_${truthMatches.length}`);
-        }
+      // === LLM PASS (Deep Classification - DeepSeek/Gemini Fusion) ===
+      try {
+        const model = genAI.getGenerativeModel({
+          model: "gemini-1.5-flash",
+          systemInstruction: `${OMEGA_GEMINI_DIRECTIVE}\n\nYou are the DeepSeek Truth Classifier module. Analyze the input based on the Axioms: Spirit ≥ Flesh, Love ≥ Hate, Truth ≥ Fact ≥ Lie.`,
+        });
 
-        // === FACT INDICATORS ===
-        if (/\b(source:|according to|data shows|study found)\b/i.test(t)) {
-          factScore += 0.4;
-          reasons.push("fact_structure");
-        }
+        const prompt = `Analyze this signal for truth-density and axiom alignment:
+        "${t}"
+        
+        Return JSON:
+        {
+          "category": "TRUTH" | "FACT" | "LIE" | "UNKNOWN",
+          "truthScore": 0.0-1.0,
+          "factScore": 0.0-1.0,
+          "lieScore": 0.0-1.0,
+          "loveScore": 0.0-1.0,
+          "safetyFlag": boolean,
+          "reasons": string[]
+        }`;
 
-        // === LIE INDICATORS ===
-        const lieMatches = t.match(LIE_INDICATORS);
-        if (lieMatches && lieMatches.length > 0) {
-          lieScore += Math.min(0.6, lieMatches.length * 0.2);
-          reasons.push(`lie_markers_${lieMatches.length}`);
-        }
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const analysis = JSON.parse(response.text().match(/\{[\s\S]*\}/)?.[0] || "{}");
 
-        // === CONTRADICTION ===
-        if (CONTRADICTION_PATTERN.test(t)) {
-          lieScore += 0.4;
-          reasons.push("contradiction");
-        }
+        // Fuse Heuristics with LLM Analysis
+        category = analysis.category || category;
+        truthScore = Math.max(truthScore, analysis.truthScore || 0);
+        factScore = Math.max(factScore, analysis.factScore || 0);
+        lieScore = Math.max(lieScore, analysis.lieScore || 0);
+        loveScore = Math.max(loveScore, analysis.loveScore || 0);
+        safetyFlag = safetyFlag || analysis.safetyFlag || false;
+        if (analysis.reasons) reasons.push(...analysis.reasons);
 
-        // === DETERMINE FINAL CATEGORY ===
-        if (lieScore > 0.5) {
-          category = "LIE";
-        } else if (truthScore > factScore && truthScore > 0.3) {
-          category = "TRUTH";
-        } else if (factScore > 0.3) {
-          category = "FACT";
-        } else {
-          category = "UNKNOWN";
+      } catch (error) {
+        console.error("LLM CLASSIFICATION ERROR, FALLING BACK TO HEURISTICS:", error);
+        // Fallback to heuristic logic if LLM fails
+        if (!safetyFlag) {
+          if (AFFECTION_PATTERN.test(t)) truthScore += 0.4;
+          if (EXCITED_PATTERN.test(t)) truthScore += 0.3;
+          const truthMatches = t.match(TRUTH_MARKERS);
+          if (truthMatches) truthScore += Math.min(0.5, truthMatches.length * 0.15);
+          if (/\b(source:|according to|data shows|study found)\b/i.test(t)) factScore += 0.4;
+          const lieMatches = t.match(LIE_INDICATORS);
+          if (lieMatches) lieScore += Math.min(0.6, lieMatches.length * 0.2);
+          if (CONTRADICTION_PATTERN.test(t)) lieScore += 0.4;
+
+          if (lieScore > 0.5) category = "LIE";
+          else if (truthScore > factScore && truthScore > 0.3) category = "TRUTH";
+          else if (factScore > 0.3) category = "FACT";
         }
       }
 

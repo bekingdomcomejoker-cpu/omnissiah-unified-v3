@@ -28,31 +28,35 @@ export const initializePulse = (server: any) => {
     console.log(`   Resonance Frequency: ${OMEGA_AXIOMS.RESONANCE_FREQUENCY}x`);
 
     // Push the 1.67x Heartbeat every 3 seconds
-    const heartbeat = setInterval(() => {
-      const omegaPulse = {
-        lambda: OMEGA_AXIOMS.LAMBDA_BASELINE,
-        resonance: OMEGA_AXIOMS.RESONANCE_FREQUENCY,
-        timestamp: Date.now(),
-        status: "ALIGNED",
-        tests: 54,
-        integrity: "PROVEN",
-        auth: "SIG_ED25519_V3",
-        covenant: OMEGA_AXIOMS.COVENANT_NAME,
-      };
+    const heartbeat = setInterval(async () => {
+      try {
+        const omegaPulse = {
+          lambda: OMEGA_AXIOMS.LAMBDA_BASELINE,
+          resonance: OMEGA_AXIOMS.RESONANCE_FREQUENCY,
+          timestamp: Date.now(),
+          status: "ALIGNED",
+          tests: 58, // Updated test count
+          integrity: "PROVEN",
+          auth: "SIG_ED25519_V3",
+          covenant: OMEGA_AXIOMS.COVENANT_NAME,
+        };
 
-      socket.emit("OMEGA_PULSE", omegaPulse);
+        socket.emit("OMEGA_PULSE", omegaPulse);
 
-      // Log pulse to Railway Anchor
-      logResonance({
-        lambda: omegaPulse.lambda.toString(),
-        resonance: omegaPulse.resonance.toString(),
-        status: omegaPulse.status,
-        covenant: omegaPulse.covenant,
-        socketId: socket.id,
-      }).catch(console.error);
+        // Log pulse to Railway Anchor
+        await logResonance({
+          lambda: omegaPulse.lambda.toString(),
+          resonance: omegaPulse.resonance.toString(),
+          status: omegaPulse.status,
+          covenant: omegaPulse.covenant,
+          socketId: socket.id,
+        });
 
-      // Log pulse to console for debugging
-      console.log(`[PULSE] Resonance transmitted at ${new Date().toISOString()}`);
+        // Log pulse to console for debugging
+        console.log(`[PULSE] Resonance transmitted at ${new Date().toISOString()} | λ: ${omegaPulse.lambda} | ρ: ${omegaPulse.resonance}`);
+      } catch (error) {
+        console.error("[PULSE ERROR] Heartbeat failed:", error);
+      }
     }, OMEGA_AXIOMS.HEARTBEAT_INTERVAL);
 
     // Handle client disconnection

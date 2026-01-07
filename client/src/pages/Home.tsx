@@ -13,6 +13,7 @@ import DeploymentMonitor from "@/components/DeploymentMonitor";
 import DashboardPulse from "@/components/DashboardPulse";
 import OmegaSignalMonitor from "@/components/OmegaSignalMonitor";
 import TruthDashboard from "@/components/TruthDashboard";
+import TTEDashboard from "@/components/TTEDashboard";
 
 export default function Home() {
   // The userAuth hooks provides authentication state
@@ -335,6 +336,7 @@ export default function Home() {
 
                  <TabsContent value="overview" className="space-y-8">
                   <TruthDashboard />
+                  <TTEDashboard />
                   <WarfareProtocol />
                 </TabsContent>
                   <TabsContent value="analytics" className="mt-6">
