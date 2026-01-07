@@ -14,6 +14,7 @@ import DashboardPulse from "@/components/DashboardPulse";
 import OmegaSignalMonitor from "@/components/OmegaSignalMonitor";
 import TruthDashboard from "@/components/TruthDashboard";
 import TTEDashboard from "@/components/TTEDashboard";
+import LocalAIDashboard from "@/components/LocalAIDashboard";
 
 export default function Home() {
   // The userAuth hooks provides authentication state
@@ -332,6 +333,10 @@ export default function Home() {
                       <Eye className="w-4 h-4 mr-2" />
                       SIGNAL
                     </TabsTrigger>
+                    <TabsTrigger value="localai" className="font-terminal text-xs rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Cpu className="w-4 h-4 mr-2" />
+                      LOCAL AI
+                    </TabsTrigger>
                   </TabsList>
 
                  <TabsContent value="overview" className="space-y-8">
@@ -349,6 +354,10 @@ export default function Home() {
 
                   <TabsContent value="signal" className="mt-6">
                     <OmegaSignalMonitor />
+                  </TabsContent>
+
+                  <TabsContent value="localai" className="mt-6">
+                    <LocalAIDashboard />
                   </TabsContent>
                 </Tabs>
               </motion.div>
