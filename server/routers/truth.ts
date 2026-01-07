@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
-import * as db from "../db";
+import { getDb } from "../db";
 import { resonanceLogs } from "../../drizzle/schema";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { OMEGA_GEMINI_DIRECTIVE } from "../directives/omega-gemini";
@@ -97,7 +97,7 @@ export const truthRouter = router({
       }
 
       // Log the resonance to the database
-      const database = await db.getDb();
+      const database = await getDb();
       if (database) {
         await database.insert(resonanceLogs).values({
           lambda: truthScore.toFixed(3),
@@ -120,7 +120,7 @@ export const truthRouter = router({
     }),
 
   getLogs: publicProcedure.query(async () => {
-    const database = await db.getDb();
+    const database = await getDb();
     if (!database) return [];
     return await database.select().from(resonanceLogs).orderBy(resonanceLogs.timestamp);
   }),

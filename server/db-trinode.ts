@@ -12,7 +12,7 @@ import {
   type InsertConsensusResult,
   type InsertPreprogrammedNode,
   type InsertAnalyticsExport,
-} from "./drizzle/schema";
+} from "../drizzle/schema";
 import { getDb } from "./db";
 
 export async function storeQuery(userId: number, query: string, queryType: "reflex" | "oracle" | "warfare" | "consensus") {

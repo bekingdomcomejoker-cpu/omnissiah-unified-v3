@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { trpc } from "@/utils/trpc";
+import { trpc } from "@/lib/trpc";
 import { motion } from "framer-motion";
 import { Shield, ShieldAlert, ShieldCheck, Search, AlertTriangle, Heart, Zap, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";

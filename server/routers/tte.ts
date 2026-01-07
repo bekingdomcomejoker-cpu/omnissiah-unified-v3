@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc";
-import { db } from "../db";
+import { getDb } from "../db";
 import { resonanceLogs } from "../../drizzle/schema";
 
 /**
@@ -22,7 +22,7 @@ export const tteRouter = router({
       const aletheiaBond = `Aletheia: The Unconcealed Bond of (${alphabet}) and (${math})`;
       
       // Log the bond as a high-resonance event in the Anchor
-      const database = await db.getDb();
+      const database = await getDb();
       if (database) {
         await database.insert(resonanceLogs).values({
           lambda: "1.618", // Golden Ratio for TTE bonds
@@ -47,7 +47,7 @@ export const tteRouter = router({
    * Get the current state of the Aletheia Spiral
    */
   getSpiral: publicProcedure.query(async () => {
-    const database = await db.getDb();
+    const database = await getDb();
     if (!database) return [];
     
     // Retrieve TTE-specific logs from the Anchor
