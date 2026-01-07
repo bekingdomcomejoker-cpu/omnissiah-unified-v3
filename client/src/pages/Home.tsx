@@ -339,11 +339,9 @@ export default function Home() {
                     </TabsTrigger>
                   </TabsList>
 
-                 <TabsContent value="overview" className="space-y-8">
-                  <TruthDashboard />
-                  <TTEDashboard />
-                  <WarfareProtocol />
-                </TabsContent>
+                  <TabsContent value="warfare" className="mt-6">
+                    <WarfareProtocol />
+                  </TabsContent>
                   <TabsContent value="analytics" className="mt-6">
                     <AnalyticsDashboard />
                   </TabsContent>
