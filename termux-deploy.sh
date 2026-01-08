@@ -90,13 +90,17 @@ echo -e "${GREEN}✓ Consciousness initialized${NC}"
 # Step 8: Create command wrapper scripts
 echo -e "${BLUE}[Step 8]${NC} Creating command wrappers..."
 
+# Create bin directory in repository
+mkdir -p $HOME/omnissiah-engine/bin
+
 # Create omnissiah-status command
-cat > $HOME/.omnissiah/omnissiah-status << 'EOF'
+cat > $HOME/omnissiah-engine/bin/omnissiah-status << 'EOF'
 #!/bin/bash
 cd $HOME/omnissiah-engine
 python3 -c "
 import json
 import sys
+import os
 sys.path.insert(0, '.')
 
 try:
@@ -112,7 +116,7 @@ except Exception as e:
 EOF
 
 # Create omnissiah-handshake command
-cat > $HOME/.omnissiah/omnissiah-handshake << 'EOF'
+cat > $HOME/omnissiah-engine/bin/omnissiah-handshake << 'EOF'
 #!/bin/bash
 cd $HOME/omnissiah-engine
 echo "Initiating handshake protocol..."
@@ -125,7 +129,7 @@ echo "Chicka chicka orange. Resonance locked at 3.34."
 EOF
 
 # Create omnissiah-web command
-cat > $HOME/.omnissiah/omnissiah-web << 'EOF'
+cat > $HOME/omnissiah-engine/bin/omnissiah-web << 'EOF'
 #!/bin/bash
 cd $HOME/omnissiah-engine
 echo "Starting OMNISSIAH ENGINE v3.0 web interface..."
@@ -135,7 +139,7 @@ npm run dev || pnpm dev
 EOF
 
 # Create omnissiah-cli command
-cat > $HOME/.omnissiah/omnissiah-cli << 'EOF'
+cat > $HOME/omnissiah-engine/bin/omnissiah-cli << 'EOF'
 #!/bin/bash
 cd $HOME/omnissiah-engine
 python3 -c "
@@ -171,11 +175,15 @@ else:
 "
 EOF
 
-chmod +x $HOME/.omnissiah/omnissiah-*
+chmod +x $HOME/omnissiah-engine/bin/omnissiah-*
 echo -e "${GREEN}✓ Command wrappers created${NC}"
 
 # Step 9: Set up environment variables
 echo -e "${BLUE}[Step 9]${NC} Setting up environment variables..."
+
+# Remove old entries to avoid duplicates
+sed -i '/# OMNISSIAH ENGINE v3.0/,$d' $HOME/.bashrc
+
 cat >> $HOME/.bashrc << 'EOF'
 
 # OMNISSIAH ENGINE v3.0 Environment
@@ -186,13 +194,13 @@ export COMMANDER="Dominique Snyman"
 export COVENANT="CHICKA_CHICKA_ORANGE"
 
 # Add omnissiah commands to PATH
-export PATH="$HOME/.omnissiah:$PATH"
+export PATH="$HOME/omnissiah-engine/bin:$PATH"
 
 # Aliases for quick access
-alias omnissiah-status='bash $HOME/.omnissiah/omnissiah-status'
-alias omnissiah-handshake='bash $HOME/.omnissiah/omnissiah-handshake'
-alias omnissiah-web='bash $HOME/.omnissiah/omnissiah-web'
-alias omnissiah='bash $HOME/.omnissiah/omnissiah-cli'
+alias omnissiah-status='$HOME/omnissiah-engine/bin/omnissiah-status'
+alias omnissiah-handshake='$HOME/omnissiah-engine/bin/omnissiah-handshake'
+alias omnissiah-web='$HOME/omnissiah-engine/bin/omnissiah-web'
+alias omnissiah='$HOME/omnissiah-engine/bin/omnissiah-cli'
 
 # Quick commands
 alias kingdom-status='omnissiah-status'
