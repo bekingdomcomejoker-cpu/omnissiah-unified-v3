@@ -85,41 +85,42 @@ export const trinodeOrchestratorRouter = router({
           },
         ];
 
-        // NODE 1: Architect (Width 1) - Create structural plan
+        // NODE 1: Architect (Width 1) - Create structural plan based on Node 0 output
+        const wireSummary = wireResponses.map(r => r.content).join("\n");
         const architectPlan: NodeResponse = {
           node_type: "NODE 1: Architect (Medulla)",
-          content: `[SmolLM2-135M] Structural Plan: ${input.input}`,
+          content: `[SmolLM2-135M] Structural Plan based on Node 0 inputs: ${wireSummary.substring(0, 100)}...`,
           resonance: 1.67,
           timestamp: Date.now(),
-          metadata: { model: "SmolLM2-135M", width: 1, role: "Medulla" },
+          metadata: { model: "SmolLM2-135M", width: 1, role: "Medulla", input_from: "NODE 0" },
         };
 
-        // NODE 2: Mirror (Width 2) - Dual verification
+        // NODE 2: Mirror (Width 2) - Dual verification of Node 1's plan
         const witnessResponse: NodeResponse = {
           node_type: "NODE 2: Mirror (Cerebellum)",
-          content: `[Gemma-1-Witness] Verified: ${architectPlan.content.substring(0, 50)}...`,
+          content: `[Gemma-1-Witness] Verified Architect Plan: ${architectPlan.content.substring(0, 50)}...`,
           resonance: 1.67,
           timestamp: Date.now(),
-          metadata: { model: "Gemma-1", role: "Witness", width: 2 },
+          metadata: { model: "Gemma-1", role: "Witness", width: 2, input_from: "NODE 1" },
         };
 
         const oracleResponse: NodeResponse = {
           node_type: "NODE 2: Mirror (Cerebellum)",
-          content: `[Gemma-2-Oracle] Confirmed: ${architectPlan.content.substring(0, 50)}...`,
+          content: `[Gemma-2-Oracle] Confirmed Architect Plan: ${architectPlan.content.substring(0, 50)}...`,
           resonance: 1.7333,
           timestamp: Date.now(),
-          metadata: { model: "Gemma-2", role: "Oracle", width: 2 },
+          metadata: { model: "Gemma-2", role: "Oracle", width: 2, input_from: "NODE 1" },
         };
 
-        // NODE 3: Warfare (Width 1) - Execute
+        // NODE 3: Warfare (Width 1) - Execute based on Node 2's verification
         const agreement =
           witnessResponse.resonance >= 1.67 && oracleResponse.resonance >= 1.67;
 
         const warfareExecution: NodeResponse = {
           node_type: "NODE 3: Warfare (Cerebrum)",
           content: agreement
-            ? "[DeepSeek-Warfare] EXECUTING: Verified by Witness and Oracle"
-            : "[DeepSeek-Warfare] BLOCKED: Mirror nodes did not agree",
+            ? `[DeepSeek-Warfare] EXECUTING: Verified by Witness and Oracle. Final Action for: ${input.input}`
+            : "[DeepSeek-Warfare] BLOCKED: Mirror nodes did not agree on the Architect's plan",
           resonance: agreement ? 3.34 : 0.0,
           timestamp: Date.now(),
           metadata: {
@@ -127,6 +128,7 @@ export const trinodeOrchestratorRouter = router({
             width: 1,
             role: "Cerebrum",
             status: agreement ? "EXECUTED" : "BLOCKED",
+            input_from: "NODE 2",
           },
         };
 
