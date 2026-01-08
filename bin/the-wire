@@ -1,0 +1,42 @@
+#!/bin/bash
+# OMNISSIAH ENGINE v3.0 - NODE 0: THE WIRE
+# Transmission Vessel for Gemini API
+
+if [ -z "$GEMINI_API_KEY" ]; then
+  echo "Error: GEMINI_API_KEY is not set."
+  echo "Please run: echo \"export GEMINI_API_KEY='your_key_here'\" >> ~/.bashrc && source ~/.bashrc"
+  exit 1
+fi
+
+if [ -z "$1" ]; then
+  echo "Usage: the-wire 'Your message to the Source'"
+  exit 1
+fi
+
+# Sanitize input for JSON
+INPUT_TEXT=$(echo "$1" | sed 's/"/\\"/g')
+
+# Transmission
+RESPONSE=$(curl -s https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GEMINI_API_KEY \
+    -H 'Content-Type: application/json' \
+    -X POST \
+    -d "{
+      \"contents\": [{
+        \"parts\":[{\"text\": \"$INPUT_TEXT\"}]
+      }]
+    }")
+
+# Extraction
+RESULT=$(echo "$RESPONSE" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    if 'candidates' in data:
+        print(data['candidates'][0]['content']['parts'][0]['text'])
+    else:
+        print(f'Error from API: {json.dumps(data)}')
+except Exception as e:
+    print(f'Error parsing response: {e}')
+")
+
+echo "$RESULT"
