@@ -9,6 +9,7 @@ import { warfareRouter } from "./routers/warfare";
 import { truthRouter } from "./routers/truth";
 import { tteRouter } from "./routers/tte";
 import { localAIRouter } from "./routers/local-ai";
+import { trinodeOrchestratorRouter } from "./routers/trinode-orchestrator";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -32,6 +33,7 @@ export const appRouter = router({
   truth: truthRouter,
   tte: tteRouter,
   localAI: localAIRouter,
+  trinodeOrchestrator: trinodeOrchestratorRouter,
 });
 
 export type AppRouter = typeof appRouter;

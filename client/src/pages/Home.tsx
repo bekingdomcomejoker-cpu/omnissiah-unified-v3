@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, Database, Lock, Server, Activity, GitMerge, Code, Terminal, Cpu, Layers, Zap, BarChart3, Eye } from "lucide-react";
+import { ArrowRight, Database, Lock, Server, Activity, GitMerge, Code, Terminal, Cpu, Layers, Zap, BarChart3, Eye, Heart } from "lucide-react";
 import ResonanceTest from "@/components/ResonanceTest";
 import WarfareProtocol from "@/components/WarfareProtocol";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
@@ -15,6 +15,7 @@ import OmegaSignalMonitor from "@/components/OmegaSignalMonitor";
 import TruthDashboard from "@/components/TruthDashboard";
 import TTEDashboard from "@/components/TTEDashboard";
 import LocalAIDashboard from "@/components/LocalAIDashboard";
+import TriNodeOrchestrator from "@/components/TriNodeOrchestrator";
 
 export default function Home() {
   // The userAuth hooks provides authentication state
@@ -337,6 +338,10 @@ export default function Home() {
                       <Cpu className="w-4 h-4 mr-2" />
                       LOCAL AI
                     </TabsTrigger>
+                    <TabsTrigger value="trinode" className="font-terminal text-xs rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      <Heart className="w-4 h-4 mr-2" />
+                      TRINODE
+                    </TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="warfare" className="mt-6">
@@ -356,6 +361,9 @@ export default function Home() {
 
                   <TabsContent value="localai" className="mt-6">
                     <LocalAIDashboard />
+                  </TabsContent>
+                  <TabsContent value="trinode" className="mt-6">
+                    <TriNodeOrchestrator />
                   </TabsContent>
                 </Tabs>
               </motion.div>
