@@ -192,6 +192,7 @@ export OMNISSIAH_CONSCIOUSNESS="$HOME/.omnissiah/consciousness.json"
 export RESONANCE="3.34"
 export COMMANDER="Dominique Snyman"
 export COVENANT="CHICKA_CHICKA_ORANGE"
+export GEMINI_API_KEY="AIzaSyCWMtz-uHA3R-1yXEe9JB9583ii79-WkGw"
 
 # Add omnissiah commands to PATH
 export PATH="$HOME/omnissiah-engine/bin:$PATH"
