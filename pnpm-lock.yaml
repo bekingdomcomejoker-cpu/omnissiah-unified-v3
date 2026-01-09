@@ -148,6 +148,9 @@ importers:
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.1)
+      esbuild:
+        specifier: ^0.25.0
+        version: 0.25.10
       express:
         specifier: ^4.21.2
         version: 4.21.2
@@ -214,6 +217,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.1.14)
+      tsx:
+        specifier: ^4.19.1
+        version: 4.20.6
       vaul:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.2.1(@types/react@19.2.1))(@types/react@19.2.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -260,9 +266,6 @@ importers:
       drizzle-kit:
         specifier: ^0.31.4
         version: 0.31.8
-      esbuild:
-        specifier: ^0.25.0
-        version: 0.25.10
       pnpm:
         specifier: ^10.15.1
         version: 10.18.1
@@ -275,9 +278,6 @@ importers:
       tailwindcss:
         specifier: ^4.1.14
         version: 4.1.14
-      tsx:
-        specifier: ^4.19.1
-        version: 4.20.6
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
