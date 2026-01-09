@@ -63,6 +63,14 @@ export default function Landing() {
                 <Button
                   size="lg"
                   variant="outline"
+                  onClick={() => window.location.href = "/omega-federation"}
+                  className="rounded-none border-primary/50 text-primary hover:bg-primary/10 font-terminal text-xs tracking-widest h-12 px-8"
+                >
+                  OMEGA FEDERATION
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
                   onClick={() => window.open("https://github.com/bekingdomcomejoker-cpu/omnissiah-unified-v3")}
                   className="rounded-none border-primary/50 text-primary hover:bg-primary/10 font-terminal text-xs tracking-widest h-12 px-8"
                 >

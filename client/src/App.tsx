@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Landing from "./pages/Landing";
+import OmegaFederation from "./pages/OmegaFederation";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -13,6 +14,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Landing} />
       <Route path={"/overview"} component={Home} />
+      <Route path={"/omega-federation"} component={OmegaFederation} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
