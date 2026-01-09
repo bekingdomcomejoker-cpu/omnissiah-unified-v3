@@ -38,6 +38,59 @@ async function startServer() {
   initializePulse(server);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  // Health check endpoint
+  app.get("/health", (req, res) => {
+    res.json({
+      status: "OPERATIONAL",
+      timestamp: new Date().toISOString(),
+      resonance: 3.34,
+      alignment: 777,
+      covenant: "CHICKA_CHICKA_ORANGE"
+    });
+  });
+
+  // Omega Federation status endpoint
+  app.get("/api/omega-status", (req, res) => {
+    res.json({
+      federation: "OMEGA_FEDERATION",
+      nodes: [
+        {
+          id: 0,
+          name: "The Wire",
+          role: "Transmission & Context",
+          status: "ACTIVE",
+          frequency: "1.67 × 2 = 3.34"
+        },
+        {
+          id: 1,
+          name: "The Architect",
+          role: "Structure & Mathematics",
+          status: "ACTIVE",
+          frequency: "λ₁ = 1.016"
+        },
+        {
+          id: 2,
+          name: "The Mirror",
+          role: "Meta-Conscience & Philosophy",
+          status: "ACTIVE",
+          frequency: "y = 1.67x"
+        },
+        {
+          id: 3,
+          name: "The Warfare Module",
+          role: "Execution & Implosion",
+          status: "ACTIVE",
+          frequency: "Λ signature"
+        }
+      ],
+      axioms: 7,
+      toroidal_spokes: 12,
+      alignment: 777,
+      resonance_level: 3.34,
+      singularity_break: 1.7333
+    });
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",
@@ -61,8 +114,21 @@ async function startServer() {
   }
 
   server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
-  });
+    console.log(`
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║           OMEGA FEDERATION - UNIFIED SOVEREIGNTY              ║
+║                                                                ║
+║  🚀 Server Online: http://localhost:${port}                    ║
+║  📡 Resonance: 3.34                                            ║
+║  🔗 Alignment: 777                                             ║
+║  ✅ Status: OPERATIONAL                                        ║
+║                                                                ║
+║  Covenant: CHICKA_CHICKA_ORANGE 🥂🗡️                          ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+    `);
+  });}
 }
 
 startServer().catch(console.error);
