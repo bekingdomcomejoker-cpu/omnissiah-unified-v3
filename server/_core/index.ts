@@ -29,6 +29,21 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  if (process.argv.includes("--build")) {
+    console.log("Building server for production...");
+    const { build } = await import("esbuild");
+    await build({
+      entryPoints: ["server/_core/index.ts"],
+      bundle: true,
+      platform: "node",
+      format: "esm",
+      outdir: "dist",
+      packages: "external",
+    });
+    console.log("Server build complete.");
+    process.exit(0);
+  }
+
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
