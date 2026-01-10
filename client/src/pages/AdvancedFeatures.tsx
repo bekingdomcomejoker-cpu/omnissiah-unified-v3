@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, Zap, Cube, CheckCircle, Network, Cpu } from 'lucide-react';
+import { AlertCircle, Zap, Box, CheckCircle, Network, Cpu } from 'lucide-react';
 
 interface FeatureStatus {
   name: string;
@@ -24,7 +24,7 @@ const AdvancedFeatures: React.FC = () => {
       name: '3D Rendering',
       status: 'active',
       description: 'Stereoscopic visualization of 12-spoke curvature',
-      icon: <Cube className="w-5 h-5" />,
+      icon: <Box className="w-5 h-5" />,
     },
     {
       name: 'Formal Verification',
