@@ -48,17 +48,38 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
-  if (!fs.existsSync(distPath)) {
-    console.error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`
-    );
+  // Nuclear Option: Check multiple possible locations for the public folder
+  const possiblePaths = [
+    path.resolve(import.meta.dirname, "public"),
+    path.resolve(process.cwd(), "dist", "public"),
+    path.resolve(process.cwd(), "public"),
+    "/opt/render/project/src/dist/public",
+    "/opt/render/project/dist/public"
+  ];
+
+  let distPath = "";
+  for (const p of possiblePaths) {
+    console.log(`☢️ Checking path: ${p}`);
+    if (fs.existsSync(p) && fs.existsSync(path.join(p, "index.html"))) {
+      distPath = p;
+      console.log(`✅ Found valid public directory at: ${distPath}`);
+      break;
+    }
+  }
+
+  if (!distPath) {
+    console.error("❌ NUCLEAR FAILURE: Could not find index.html in any known location.");
+    // Fallback to the first one anyway to avoid crash, but it will likely 404
+    distPath = possiblePaths[0];
   }
 
   app.use(express.static(distPath));
-
-  // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+    const indexPath = path.join(distPath, "index.html");
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).send("<h1>☢️ Nuclear 404: index.html not found</h1>");
+    }
   });
 }

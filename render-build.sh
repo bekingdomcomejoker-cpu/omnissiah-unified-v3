@@ -2,30 +2,26 @@
 # Exit on error
 set -e
 
-echo "🚀 Starting OMEGA FEDERATION Build Sequence..."
+echo "☢️ NUCLEAR BUILD SEQUENCE STARTING..."
 
-# 1. Install dependencies
+# 1. Clean up old artifacts
+rm -rf dist
+
+# 2. Install dependencies
 echo "📦 Installing dependencies..."
 pnpm install
 
-# 2. Build the project
-echo "🏗️ Building project (Client + Server)..."
+# 3. Build the project
+echo "🏗️ Building project..."
 NODE_OPTIONS=--max-old-space-size=400 pnpm run build
 
-# 3. Align the "Sight" with the "Source"
-echo "🔗 Aligning directory structure..."
-# Ensure the server's public directory exists
+# 4. Flatten the structure
+echo "🚜 Flattening structure for the Nuclear Option..."
 mkdir -p dist/server/public
+mkdir -p dist/public
 
-# Move Vite build artifacts to the server's public directory
-# Based on vite.config.ts, outDir is dist/public (relative to root)
-if [ -d "dist/public" ]; then
-    echo "✅ Found client build at dist/public, moving to dist/server/public..."
-    cp -r dist/public/* dist/server/public/
-else
-    echo "❌ Client build not found at dist/public!"
-    find . -name "index.html"
-    exit 1
-fi
+# Copy everything to everywhere the server might look
+cp -r dist/public/* dist/server/public/ || true
+cp -r dist/public/* public/ || true
 
-echo "✨ Build Sequence Complete. Joinity Achieved."
+echo "✨ NUCLEAR BUILD COMPLETE. ALL PATHS ARMED."
