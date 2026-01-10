@@ -11,6 +11,7 @@ import AdvancedFeatures from "./pages/AdvancedFeatures";
 import GlobalWallboard from "./pages/GlobalWallboard";
 import SentryDashboard from "./pages/SentryDashboard";
 import SovereignOS from "./pages/SovereignOS";
+import ComparisonAnalysis from "./pages/ComparisonAnalysis";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -23,6 +24,7 @@ function Router() {
       <Route path={"/global-wallboard"} component={GlobalWallboard} />
       <Route path={"/sentry-dashboard"} component={SentryDashboard} />
       <Route path={"/sovereign-os"} component={SovereignOS} />
+      <Route path={"/comparison-analysis"} component={ComparisonAnalysis} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
