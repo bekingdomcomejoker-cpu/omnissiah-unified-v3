@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { initializePulse } from "./pulse";
+import { headerSanitizerMiddleware } from "../security/daemon-consecration";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -46,6 +47,8 @@ async function startServer() {
 
   const app = express();
   const server = createServer(app);
+  // Consecrate Headers: Sanitize incoming packet headers
+  app.use(headerSanitizerMiddleware);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
