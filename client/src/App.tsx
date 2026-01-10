@@ -10,6 +10,7 @@ import OmegaFederation from "./pages/OmegaFederation";
 import AdvancedFeatures from "./pages/AdvancedFeatures";
 import GlobalWallboard from "./pages/GlobalWallboard";
 import SentryDashboard from "./pages/SentryDashboard";
+import SovereignOS from "./pages/SovereignOS";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -21,6 +22,7 @@ function Router() {
       <Route path={"/advanced-features"} component={AdvancedFeatures} />
       <Route path={"/global-wallboard"} component={GlobalWallboard} />
       <Route path={"/sentry-dashboard"} component={SentryDashboard} />
+      <Route path={"/sovereign-os"} component={SovereignOS} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
