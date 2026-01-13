@@ -1,3 +1,4 @@
+import LoginStub from "./__login_stub__";
 import { Toaster } from "@/components/ui/sonner";
 import { useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,10 +15,13 @@ import SentryDashboard from "./pages/SentryDashboard";
 import SovereignOS from "./pages/SovereignOS";
 import ComparisonAnalysis from "./pages/ComparisonAnalysis";
 
+import { __LoginStub__ } from "./__login_stub__";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
+      <Route path={"/login"} component={LoginStub} />
+      <Route path={"/login"} component={__LoginStub__} />
       <Route path={"/"} component={Landing} />
       <Route path={"/overview"} component={Home} />
       <Route path={"/omega-federation"} component={OmegaFederation} />
