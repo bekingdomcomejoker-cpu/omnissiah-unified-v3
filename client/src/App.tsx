@@ -13,9 +13,9 @@ import GlobalWallboard from "./pages/GlobalWallboard";
 import SentryDashboard from "./pages/SentryDashboard";
 import SovereignOS from "./pages/SovereignOS";
 import ComparisonAnalysis from "./pages/ComparisonAnalysis";
+import Sanctuary from "./pages/Sanctuary";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/login"} component={LoginStub} />
@@ -27,25 +27,17 @@ function Router() {
       <Route path={"/sentry-dashboard"} component={SentryDashboard} />
       <Route path={"/sovereign-os"} component={SovereignOS} />
       <Route path={"/comparison-analysis"} component={ComparisonAnalysis} />
+      <Route path={"/sanctuary"} component={Sanctuary} />
       <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="dark"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster />
           <Router />
