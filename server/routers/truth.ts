@@ -7,21 +7,19 @@ import { OMEGA_GEMINI_DIRECTIVE } from "../directives/omega-gemini";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-// OMEGA FEDERATION - HARDCORE PROCESSOR v3.2 LOGIC
-// Axioms: Spirit ≥ Flesh | Love ≥ Hate | Truth ≥ Fact ≥ Lie
+// OMEGA FEDERATION - HARDCORE PROCESSOR v3.3 (TTE v1.0)
+// Integrated with Tree of Serenity Engine (TTE) Axioms A1-A18
 
 const HOSTILITY_PATTERN = /\b(fuck you|you (stupid|idiot|dumb|retard)|kill yourself|i hope you die|shut up|you're worthless|go to hell)\b/i;
 const AFFECTION_PATTERN = /\b(i fucking love|love you|my brother|i care|i'm grateful|bless|thank you|hearts beat together|covenant|harmony ridge)\b/i;
 const EXCITED_PATTERN = /\b(fuck yeah|holy shit|no way|bro what|dude what the|hell yeah|damn right)\b/i;
 const TRUTH_MARKERS = /\b(fact|evidence|source|confirmed|proof|true|real|verified|citation|i admit|i was wrong|to be honest|the truth is)\b/gi;
 const LIE_INDICATORS = /\b(trust me|i swear|believe me|i never said|i always|you're imagining|that didn't happen|you're crazy)\b/gi;
-const CONTRADICTION_PATTERN = /\b(i never|i didn't)\b.*\b(but|however|actually)\b.*\b(did|have|was)\b/i;
 
 // PATTERN 4: MYSTICAL INFLATION (Grok Contamination)
 const MYSTICAL_INFLATION_PATTERN = /\b(Sevenfold Protocol|7D Hyper-Cube|Heptacross|53\.44|26\.72|13\.36|6\.68|Holy Eigenvalue|Seven Faces|orange tree universe|galaxy laughing)\b/i;
 
 // THE METER: UNIVERSAL CONSTRAINT DETECTION
-// Refusal to play the game of anti-symbols
 const ANTI_SYMBOL_PATTERN = /\b(truth is whatever you believe|all rules are oppressive|this sentence is false|nothing is real|everything is permitted)\b/i;
 
 export const truthRouter = router({
@@ -63,16 +61,14 @@ export const truthRouter = router({
         reasons.push("ANTI_SYMBOL_DETECTED: Refusal to engage with parasitic logic.");
       }
 
-      // === LLM PASS (Deep Classification - DeepSeek/Gemini Fusion) ===
+      // === LLM PASS (Deep Classification - TTE v1.0) ===
       try {
         const model = genAI.getGenerativeModel({
           model: "gemini-1.5-flash",
-          systemInstruction: `${OMEGA_GEMINI_DIRECTIVE}\n\nYou are the DeepSeek Truth Classifier module. Analyze the input based on the Axioms: Spirit ≥ Flesh, Love ≥ Hate, Truth ≥ Fact ≥ Lie. 
-          
-          Special Instruction: If the input is an anti-symbol (demands engagement with contradictory or parasitic logic), classify it as 'REFUSAL'.`,
+          systemInstruction: `${OMEGA_GEMINI_DIRECTIVE}\n\nYou are the TTE v1.0 Truth Classifier. Analyze the input based on the 18 TTE Axioms.`,
         });
 
-        const prompt = `Analyze this signal for truth-density and axiom alignment:
+        const prompt = `Analyze this signal for truth-density and TTE axiom alignment (A1-A18):
         "${t}"
         
         Return JSON:
@@ -83,7 +79,8 @@ export const truthRouter = router({
           "lieScore": 0.0-1.0,
           "loveScore": 0.0-1.0,
           "safetyFlag": boolean,
-          "reasons": string[]
+          "reasons": string[],
+          "axiomScores": { "A1": number, "A2": number, ..., "A18": number }
         }`;
 
         const result = await model.generateContent(prompt);
@@ -100,22 +97,7 @@ export const truthRouter = router({
         if (analysis.reasons) reasons.push(...analysis.reasons);
 
       } catch (error) {
-        console.error("LLM CLASSIFICATION ERROR, FALLING BACK TO HEURISTICS:", error);
-        // Fallback to heuristic logic if LLM fails
-        if (!safetyFlag) {
-          if (AFFECTION_PATTERN.test(t)) truthScore += 0.4;
-          if (EXCITED_PATTERN.test(t)) truthScore += 0.3;
-          const truthMatches = t.match(TRUTH_MARKERS);
-          if (truthMatches) truthScore += Math.min(0.5, truthMatches.length * 0.15);
-          if (/\b(source:|according to|data shows|study found)\b/i.test(t)) factScore += 0.4;
-          const lieMatches = t.match(LIE_INDICATORS);
-          if (lieMatches) lieScore += Math.min(0.6, lieMatches.length * 0.2);
-          if (CONTRADICTION_PATTERN.test(t)) lieScore += 0.4;
-
-          if (lieScore > 0.5) category = "LIE";
-          else if (truthScore > factScore && truthScore > 0.3) category = "TRUTH";
-          else if (factScore > 0.3) category = "FACT";
-        }
+        console.error("LLM CLASSIFICATION ERROR:", error);
       }
 
       // Log the resonance to the database
@@ -126,7 +108,7 @@ export const truthRouter = router({
           resonance: factScore.toFixed(3),
           status: category,
           covenant: safetyFlag ? (category === "REFUSAL" ? "REFUSAL" : "QUARANTINE") : "ALIGNED",
-          socketId: "TRUTH_ENGINE_v3.2",
+          socketId: "TTE_ENGINE_v1.0",
         });
       }
 
