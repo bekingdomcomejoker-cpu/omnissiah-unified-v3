@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Zap, Globe, TrendingUp } from 'lucide-react';
+import { Activity, Zap, Globe, TrendingUp, Shield } from 'lucide-react';
 
 interface RegionMetrics {
   region: string;
@@ -207,6 +207,13 @@ const GlobalWallboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="text-purple-200">Multi-Host Federation</span>
               <span className="text-green-400 font-bold">OPERATIONAL</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-purple-200 flex items-center gap-2">
+                <Shield className="w-4 h-4 text-cyan-400" />
+                Pattern 4 Shield
+              </span>
+              <span className="text-green-400 font-bold">HARDENED</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-purple-200">Covenant Status</span>

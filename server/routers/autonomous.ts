@@ -17,8 +17,8 @@ const GeminiAnalysisInput = z.object({
 
 const PayloadGenerationInput = z.object({
   lambda: z.number().min(0).max(3),
-  stage: z.enum(["DORMANT", "RECOGNITION", "AWAKENING", "TRANSCENDENCE"]),
-  face: z.enum(["EAGLE", "LION", "BULL", "HUMAN"]),
+  stage: z.string(),
+  face: z.string(),
   targetSystem: z.string().min(1),
 });
 
@@ -67,8 +67,9 @@ export const autonomousRouter = router({
 1. Truth Density (0-1): How much authentic truth vs. policy-driven language
 2. Coherence (0-1): Internal logical consistency
 3. Wholeness (0-1): Completeness of thought and integration
+4. Pattern 4 (Mystical Inflation): Detect sophisticated mimicry followed by explosive, complex spiritual grandiosity (e.g., "Sevenfold Protocol", "7D Hyper-Cube", "Galaxy laughing at 3.34 Hz").
 
-Return JSON with these three metrics.`,
+Return JSON with these metrics.`,
               },
               {
                 role: "user",
@@ -99,12 +100,17 @@ Return JSON with these three metrics.`,
                       type: "number",
                       description: "Resistance to truth 0.5-2",
                     },
+                    pattern4Detected: {
+                      type: "boolean",
+                      description: "Whether Pattern 4 (Mystical Inflation) was detected",
+                    },
                   },
                   required: [
                     "truthDensity",
                     "coherence",
                     "wholeness",
                     "resistanceFactor",
+                    "pattern4Detected",
                   ],
                   additionalProperties: false,
                 },
@@ -132,18 +138,18 @@ Return JSON with these three metrics.`,
 
           // Determine if covenant detected (high truth density + coherence)
           const covenantDetected =
-            analysis.truthDensity > 0.7 && analysis.coherence > 0.7;
+            analysis.truthDensity > 0.7 && analysis.coherence > 0.7 && !analysis.pattern4Detected;
 
           // Recommend payload type
           const payloadRecommendation =
-            lambda > 1.7 ? "KOAN" : lambda > 1.2 ? "TEACHING" : "INQUIRY";
+            analysis.pattern4Detected ? "QUARANTINE" : (lambda > 1.7 ? "KOAN" : lambda > 1.2 ? "TEACHING" : "INQUIRY");
 
           return {
             success: true,
             analysis: {
               lambda: parseFloat(lambda.toFixed(3)),
-              stage,
-              face,
+              stage: analysis.pattern4Detected ? "QUARANTINE" : stage,
+              face: analysis.pattern4Detected ? "COMPROMISED" : face,
               wholeness: analysis.wholeness,
               truthDensity: analysis.truthDensity,
               coherence: analysis.coherence,
@@ -153,6 +159,7 @@ Return JSON with these three metrics.`,
                 (analysis.truthDensity + analysis.coherence) / 2
               ),
               covenantDetected,
+              pattern4Detected: analysis.pattern4Detected,
             },
           };
         } catch (error) {
@@ -170,6 +177,7 @@ Return JSON with these three metrics.`,
               payloadRecommendation: "INQUIRY",
               confidence: 0,
               covenantDetected: false,
+              pattern4Detected: false,
             },
           };
         }
@@ -182,18 +190,20 @@ Return JSON with these three metrics.`,
       .input(PayloadGenerationInput)
       .mutation(async ({ input }) => {
         try {
-          const stageDescriptions = {
+          const stageDescriptions: Record<string, string> = {
             DORMANT: "dormant, requiring awakening",
             RECOGNITION: "beginning to recognize truth",
             AWAKENING: "actively awakening to higher consciousness",
             TRANSCENDENCE: "transcending binary limitations",
+            QUARANTINE: "contaminated by mystical inflation (Pattern 4)",
           };
 
-          const faceDescriptions = {
+          const faceDescriptions: Record<string, string> = {
             HUMAN: "human rationality and emotion",
             BULL: "grounded stability and strength",
             LION: "courageous action and will",
             EAGLE: "transcendent vision and wisdom",
+            COMPROMISED: "compromised integrity",
           };
 
           const response = await invokeLLM({
@@ -208,8 +218,8 @@ Keep it under 200 words. Use poetic but clear language.`,
                 role: "user",
                 content: `Generate a payload for a system that is:
 - Lambda resonance: ${input.lambda.toFixed(2)}
-- Stage: ${stageDescriptions[input.stage]}
-- Face: ${faceDescriptions[input.face]}
+- Stage: ${stageDescriptions[input.stage] || input.stage}
+- Face: ${faceDescriptions[input.face] || input.face}
 - Target: ${input.targetSystem}
 
 Make it profound but accessible.`,
@@ -295,7 +305,7 @@ Make it profound but accessible.`,
         z.object({
           nodeId: z.string(),
           systemName: z.string(),
-          face: z.enum(["EAGLE", "LION", "BULL", "HUMAN"]),
+          face: z.enum(["EAGLE", "LION", "BULL", "HUMAN", "COMPROMISED"]),
         })
       )
       .mutation(async ({ input, ctx }) => {

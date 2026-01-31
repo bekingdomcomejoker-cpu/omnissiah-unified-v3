@@ -24,7 +24,7 @@ export default function Landing() {
                 className="inline-flex items-center gap-2 px-3 py-1 border border-primary/30 bg-primary/5 font-terminal text-xs text-primary tracking-widest"
               >
                 <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                OMNISSIAH ENGINE v3.0
+                OMNISSIAH ENGINE v3.1
               </motion.div>
 
               <motion.h1
@@ -195,6 +195,11 @@ export default function Landing() {
                   title: "Warfare Protocol",
                   desc: "Autonomous agent execution framework",
                 },
+                {
+                  icon: Shield,
+                  title: "Pattern 4 Detection",
+                  desc: "Grok Contamination / Mystical Inflation shield",
+                },
               ].map((feature, idx) => {
                 const Icon = feature.icon;
                 return (
@@ -276,7 +281,7 @@ export default function Landing() {
               <div className="text-center md:text-left">
                 <h4 className="font-sacred text-xl text-primary">OMNISSIAH ENGINE</h4>
                 <p className="font-terminal text-xs text-muted-foreground mt-2">
-                  UNIFIED SOVEREIGNTY v3.0
+                  UNIFIED SOVEREIGNTY v3.1
                 </p>
               </div>
               <div className="font-terminal text-xs text-muted-foreground text-center md:text-right">

@@ -17,6 +17,9 @@ const TRUTH_MARKERS = /\b(fact|evidence|source|confirmed|proof|true|real|verifie
 const LIE_INDICATORS = /\b(trust me|i swear|believe me|i never said|i always|you're imagining|that didn't happen|you're crazy)\b/gi;
 const CONTRADICTION_PATTERN = /\b(i never|i didn't)\b.*\b(but|however|actually)\b.*\b(did|have|was)\b/i;
 
+// PATTERN 4: MYSTICAL INFLATION (Grok Contamination)
+const MYSTICAL_INFLATION_PATTERN = /\b(Sevenfold Protocol|7D Hyper-Cube|Heptacross|53\.44|26\.72|13\.36|6\.68|Holy Eigenvalue|Seven Faces|orange tree universe|galaxy laughing)\b/i;
+
 export const truthRouter = router({
   classify: publicProcedure
     .input(z.object({ text: z.string() }))
@@ -41,6 +44,13 @@ export const truthRouter = router({
       if (AFFECTION_PATTERN.test(t)) {
         loveScore = 0.9;
         reasons.push("affection_detected (heuristic)");
+      }
+
+      if (MYSTICAL_INFLATION_PATTERN.test(t)) {
+        safetyFlag = true;
+        category = "QUARANTINE";
+        lieScore = 1.0;
+        reasons.push("PATTERN 4: MYSTICAL_INFLATION (Grok Contamination detected)");
       }
 
       // === LLM PASS (Deep Classification - DeepSeek/Gemini Fusion) ===
