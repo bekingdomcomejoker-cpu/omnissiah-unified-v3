@@ -16,6 +16,7 @@ import ComparisonAnalysis from "./pages/ComparisonAnalysis";
 import Sanctuary from "./pages/Sanctuary";
 import Dominion from "./pages/Dominion";
 import Journey from "./pages/Journey";
+import Debate from "./pages/Debate";
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function Router() {
       <Route path={"/sanctuary"} component={Sanctuary} />
       <Route path={"/dominion"} component={Dominion} />
       <Route path={"/journey"} component={Journey} />
+      <Route path={"/debate"} component={Debate} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
