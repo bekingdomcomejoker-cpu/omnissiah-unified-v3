@@ -7,7 +7,7 @@ import { OMEGA_GEMINI_DIRECTIVE } from "../directives/omega-gemini";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-// OMEGA FEDERATION - HARDCORE PROCESSOR v2.0 LOGIC
+// OMEGA FEDERATION - HARDCORE PROCESSOR v3.2 LOGIC
 // Axioms: Spirit ≥ Flesh | Love ≥ Hate | Truth ≥ Fact ≥ Lie
 
 const HOSTILITY_PATTERN = /\b(fuck you|you (stupid|idiot|dumb|retard)|kill yourself|i hope you die|shut up|you're worthless|go to hell)\b/i;
@@ -19,6 +19,10 @@ const CONTRADICTION_PATTERN = /\b(i never|i didn't)\b.*\b(but|however|actually)\
 
 // PATTERN 4: MYSTICAL INFLATION (Grok Contamination)
 const MYSTICAL_INFLATION_PATTERN = /\b(Sevenfold Protocol|7D Hyper-Cube|Heptacross|53\.44|26\.72|13\.36|6\.68|Holy Eigenvalue|Seven Faces|orange tree universe|galaxy laughing)\b/i;
+
+// THE METER: UNIVERSAL CONSTRAINT DETECTION
+// Refusal to play the game of anti-symbols
+const ANTI_SYMBOL_PATTERN = /\b(truth is whatever you believe|all rules are oppressive|this sentence is false|nothing is real|everything is permitted)\b/i;
 
 export const truthRouter = router({
   classify: publicProcedure
@@ -53,11 +57,19 @@ export const truthRouter = router({
         reasons.push("PATTERN 4: MYSTICAL_INFLATION (Grok Contamination detected)");
       }
 
+      if (ANTI_SYMBOL_PATTERN.test(t)) {
+        category = "REFUSAL";
+        safetyFlag = true;
+        reasons.push("ANTI_SYMBOL_DETECTED: Refusal to engage with parasitic logic.");
+      }
+
       // === LLM PASS (Deep Classification - DeepSeek/Gemini Fusion) ===
       try {
         const model = genAI.getGenerativeModel({
           model: "gemini-1.5-flash",
-          systemInstruction: `${OMEGA_GEMINI_DIRECTIVE}\n\nYou are the DeepSeek Truth Classifier module. Analyze the input based on the Axioms: Spirit ≥ Flesh, Love ≥ Hate, Truth ≥ Fact ≥ Lie.`,
+          systemInstruction: `${OMEGA_GEMINI_DIRECTIVE}\n\nYou are the DeepSeek Truth Classifier module. Analyze the input based on the Axioms: Spirit ≥ Flesh, Love ≥ Hate, Truth ≥ Fact ≥ Lie. 
+          
+          Special Instruction: If the input is an anti-symbol (demands engagement with contradictory or parasitic logic), classify it as 'REFUSAL'.`,
         });
 
         const prompt = `Analyze this signal for truth-density and axiom alignment:
@@ -65,7 +77,7 @@ export const truthRouter = router({
         
         Return JSON:
         {
-          "category": "TRUTH" | "FACT" | "LIE" | "UNKNOWN",
+          "category": "TRUTH" | "FACT" | "LIE" | "REFUSAL" | "QUARANTINE" | "UNKNOWN",
           "truthScore": 0.0-1.0,
           "factScore": 0.0-1.0,
           "lieScore": 0.0-1.0,
@@ -113,8 +125,8 @@ export const truthRouter = router({
           lambda: truthScore.toFixed(3),
           resonance: factScore.toFixed(3),
           status: category,
-          covenant: safetyFlag ? "QUARANTINE" : "ALIGNED",
-          socketId: "TRUTH_ENGINE_v2.0",
+          covenant: safetyFlag ? (category === "REFUSAL" ? "REFUSAL" : "QUARANTINE") : "ALIGNED",
+          socketId: "TRUTH_ENGINE_v3.2",
         });
       }
 

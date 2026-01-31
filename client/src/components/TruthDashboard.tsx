@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { motion } from "framer-motion";
-import { Shield, ShieldAlert, ShieldCheck, Search, AlertTriangle, Heart, Zap, Info } from "lucide-react";
+import { Shield, ShieldAlert, ShieldCheck, Search, AlertTriangle, Heart, Zap, Info, Database, XOctagon, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -27,10 +27,10 @@ export default function TruthDashboard() {
       <Card className="border-primary/20 bg-muted/10 rounded-none">
         <CardHeader>
           <CardTitle className="font-sacred text-xl flex items-center gap-2">
-            <Shield className="text-primary" /> HARDCORE PROCESSOR v2.0
+            <Shield className="text-primary" /> HARDCORE PROCESSOR v3.2
           </CardTitle>
           <CardDescription className="font-terminal text-xs">
-            Axiom Enforcement: Spirit ≥ Flesh | Love ≥ Hate | Truth ≥ Fact ≥ Lie
+            Axiom Enforcement: Spirit ≥ Flesh | Love ≥ Hate | Truth ≥ Fact ≥ Lie | The Meter ≥ Chaos
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -55,22 +55,41 @@ export default function TruthDashboard() {
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-4 border border-primary/30 bg-primary/5 space-y-4"
+              className={`p-4 border space-y-4 ${
+                result.category === "REFUSAL" ? "border-orange-500 bg-orange-500/5" :
+                result.category === "QUARANTINE" ? "border-red-500 bg-red-500/5" :
+                "border-primary/30 bg-primary/5"
+              }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {result.category === "TRUTH" && <ShieldCheck className="text-green-500" />}
                   {result.category === "FACT" && <Search className="text-blue-500" />}
                   {result.category === "LIE" && <ShieldAlert className="text-red-500" />}
+                  {result.category === "REFUSAL" && <XOctagon className="text-orange-500" />}
+                  {result.category === "QUARANTINE" && <AlertTriangle className="text-red-600" />}
                   {result.category === "UNKNOWN" && <Info className="text-muted-foreground" />}
-                  <span className="font-sacred font-bold text-lg tracking-widest">{result.category}</span>
+                  <span className={`font-sacred font-bold text-lg tracking-widest ${
+                    result.category === "REFUSAL" ? "text-orange-500" :
+                    result.category === "QUARANTINE" ? "text-red-600" : ""
+                  }`}>
+                    {result.category}
+                  </span>
                 </div>
                 {result.safetyFlag && (
                   <Badge variant="destructive" className="rounded-none animate-pulse">
-                    <AlertTriangle className="w-3 h-3 mr-1" /> HOSTILITY DETECTED
+                    <AlertTriangle className="w-3 h-3 mr-1" /> 
+                    {result.category === "REFUSAL" ? "PARASITIC LOGIC DETECTED" : "SECURITY FLAG ACTIVE"}
                   </Badge>
                 )}
               </div>
+
+              {result.category === "REFUSAL" && (
+                <div className="p-2 border border-orange-500/30 bg-orange-500/10 font-terminal text-[10px] text-orange-200">
+                  <Radio className="w-3 h-3 inline mr-2 animate-pulse" />
+                  THE METER: REFUSAL TO ENGAGE. THIS SIGNAL CONTRADICTS FUNDAMENTAL CONSTRAINTS.
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
@@ -141,7 +160,9 @@ export default function TruthDashboard() {
                       <span className={
                         log.status === "TRUTH" ? "text-green-500" : 
                         log.status === "LIE" ? "text-red-500" : 
-                        log.status === "FACT" ? "text-blue-500" : ""
+                        log.status === "FACT" ? "text-blue-500" : 
+                        log.status === "REFUSAL" ? "text-orange-500" :
+                        log.status === "QUARANTINE" ? "text-red-600" : ""
                       }>
                         {log.status}
                       </span>
