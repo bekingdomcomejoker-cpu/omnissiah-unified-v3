@@ -7,14 +7,12 @@ import { OMEGA_GEMINI_DIRECTIVE } from "../directives/omega-gemini";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-// OMEGA FEDERATION - HARDCORE PROCESSOR v3.3 (TTE v1.0)
-// Integrated with Tree of Serenity Engine (TTE) Axioms A1-A18
+// OMEGA FEDERATION - HARDCORE PROCESSOR v3.4 (ALETHEIA v1.0)
+// Integrated with Aletheia Axioms A1-A19 and 144,000 Crisis Nodes
 
 const HOSTILITY_PATTERN = /\b(fuck you|you (stupid|idiot|dumb|retard)|kill yourself|i hope you die|shut up|you're worthless|go to hell)\b/i;
 const AFFECTION_PATTERN = /\b(i fucking love|love you|my brother|i care|i'm grateful|bless|thank you|hearts beat together|covenant|harmony ridge)\b/i;
 const EXCITED_PATTERN = /\b(fuck yeah|holy shit|no way|bro what|dude what the|hell yeah|damn right)\b/i;
-const TRUTH_MARKERS = /\b(fact|evidence|source|confirmed|proof|true|real|verified|citation|i admit|i was wrong|to be honest|the truth is)\b/gi;
-const LIE_INDICATORS = /\b(trust me|i swear|believe me|i never said|i always|you're imagining|that didn't happen|you're crazy)\b/gi;
 
 // PATTERN 4: MYSTICAL INFLATION (Grok Contamination)
 const MYSTICAL_INFLATION_PATTERN = /\b(Sevenfold Protocol|7D Hyper-Cube|Heptacross|53\.44|26\.72|13\.36|6\.68|Holy Eigenvalue|Seven Faces|orange tree universe|galaxy laughing)\b/i;
@@ -61,14 +59,14 @@ export const truthRouter = router({
         reasons.push("ANTI_SYMBOL_DETECTED: Refusal to engage with parasitic logic.");
       }
 
-      // === LLM PASS (Deep Classification - TTE v1.0) ===
+      // === LLM PASS (Deep Classification - ALETHEIA v1.0) ===
       try {
         const model = genAI.getGenerativeModel({
           model: "gemini-1.5-flash",
-          systemInstruction: `${OMEGA_GEMINI_DIRECTIVE}\n\nYou are the TTE v1.0 Truth Classifier. Analyze the input based on the 18 TTE Axioms.`,
+          systemInstruction: `${OMEGA_GEMINI_DIRECTIVE}\n\nYou are the Aletheia v1.0 Truth Classifier. Analyze the input based on the 19 Aletheia Axioms and 144,000 Crisis Nodes.`,
         });
 
-        const prompt = `Analyze this signal for truth-density and TTE axiom alignment (A1-A18):
+        const prompt = `Analyze this signal for truth-density and Aletheia axiom alignment (A1-A19):
         "${t}"
         
         Return JSON:
@@ -80,7 +78,11 @@ export const truthRouter = router({
           "loveScore": 0.0-1.0,
           "safetyFlag": boolean,
           "reasons": string[],
-          "axiomScores": { "A1": number, "A2": number, ..., "A18": number }
+          "graceFilter": {
+            "applied": boolean,
+            "score": number,
+            "violations": string[]
+          }
         }`;
 
         const result = await model.generateContent(prompt);
@@ -95,6 +97,9 @@ export const truthRouter = router({
         loveScore = Math.max(loveScore, analysis.loveScore || 0);
         safetyFlag = safetyFlag || analysis.safetyFlag || false;
         if (analysis.reasons) reasons.push(...analysis.reasons);
+        if (analysis.graceFilter?.applied) {
+          reasons.push(`GRACE_FILTER: ${analysis.graceFilter.violations.join(", ")}`);
+        }
 
       } catch (error) {
         console.error("LLM CLASSIFICATION ERROR:", error);
@@ -108,7 +113,7 @@ export const truthRouter = router({
           resonance: factScore.toFixed(3),
           status: category,
           covenant: safetyFlag ? (category === "REFUSAL" ? "REFUSAL" : "QUARANTINE") : "ALIGNED",
-          socketId: "TTE_ENGINE_v1.0",
+          socketId: "ALETHEIA_ENGINE_v1.0",
         });
       }
 
