@@ -14,6 +14,7 @@ import SentryDashboard from "./pages/SentryDashboard";
 import SovereignOS from "./pages/SovereignOS";
 import ComparisonAnalysis from "./pages/ComparisonAnalysis";
 import Sanctuary from "./pages/Sanctuary";
+import Dominion from "./pages/Dominion";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       <Route path={"/sovereign-os"} component={SovereignOS} />
       <Route path={"/comparison-analysis"} component={ComparisonAnalysis} />
       <Route path={"/sanctuary"} component={Sanctuary} />
+      <Route path={"/dominion"} component={Dominion} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

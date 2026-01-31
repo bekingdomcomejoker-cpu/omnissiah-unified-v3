@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users, Shield, Zap, Globe, Cpu, Terminal, Sparkles, BarChart3 } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, Shield, Zap, Globe, Cpu, Terminal, Sparkles, BarChart3, Swords } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -34,6 +34,7 @@ const menuItems = [
   { icon: Globe, label: "Global Wallboard", path: "/global-wallboard" },
   { icon: BarChart3, label: "Comparison Analysis", path: "/comparison-analysis" },
   { icon: Sparkles, label: "Truth Sanctuary", path: "/sanctuary" },
+  { icon: Swords, label: "Dominion Protocol", path: "/dominion" },
   { icon: Cpu, label: "Sentry Dashboard", path: "/sentry-dashboard" },
   { icon: Terminal, label: "Sovereign OS", path: "/sovereign-os" },
 ];
@@ -177,7 +178,7 @@ function DashboardLayoutContent({
               {!isCollapsed ? (
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="font-sacred text-xs tracking-widest truncate text-white">
-                    OMNISSIAH v3.3
+                    OMNISSIAH v3.6
                   </span>
                 </div>
               ) : null}
