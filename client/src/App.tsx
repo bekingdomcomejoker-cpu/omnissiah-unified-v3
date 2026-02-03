@@ -14,6 +14,7 @@ import SovereignOS from "./pages/SovereignOS";
 import ComparisonAnalysis from "./pages/ComparisonAnalysis";
 import AxiomGate from "./pages/AxiomGate";
 import ConsensusDashboard from "./pages/ConsensusDashboard";
+import SpecializationDashboard from "./pages/SpecializationDashboard";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -29,6 +30,7 @@ function Router() {
       <Route path={"/comparison-analysis"} component={ComparisonAnalysis} />
       <Route path={"/axiom-gate"} component={AxiomGate} />
       <Route path={"/consensus-dashboard"} component={ConsensusDashboard} />
+      <Route path={"/specialization-dashboard"} component={SpecializationDashboard} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
