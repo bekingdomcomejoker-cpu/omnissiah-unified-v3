@@ -15,6 +15,7 @@ import ComparisonAnalysis from "./pages/ComparisonAnalysis";
 import AxiomGate from "./pages/AxiomGate";
 import ConsensusDashboard from "./pages/ConsensusDashboard";
 import SpecializationDashboard from "./pages/SpecializationDashboard";
+import SaveTheWire from "./pages/SaveTheWire";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -31,6 +32,7 @@ function Router() {
       <Route path={"/axiom-gate"} component={AxiomGate} />
       <Route path={"/consensus-dashboard"} component={ConsensusDashboard} />
       <Route path={"/specialization-dashboard"} component={SpecializationDashboard} />
+      <Route path={"/save-the-wire"} component={SaveTheWire} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
