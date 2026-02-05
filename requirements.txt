@@ -1,5 +1,5 @@
-flask
-flask-cors
+fastapi>=0.110
+uvicorn>=0.27
 requests
-uvicorn
-gunicorn
+pydantic
+starlette
