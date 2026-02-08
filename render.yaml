@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: omnissiah-unified-v3
+    env: node
+    plan: free
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /health
